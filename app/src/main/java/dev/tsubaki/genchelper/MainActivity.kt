@@ -6,10 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
-import dev.tsubaki.genchelper.ui.logic.LoginLogic
-import dev.tsubaki.genchelper.ui.logic.sendSimpleNotification
 import dev.tsubaki.genchelper.ui.screens.LoginScreen
 import dev.tsubaki.genchelper.ui.screens.rememberLoginScreenState
+import dev.tsubaki.genchelper.utilities.NotificationHelper
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +27,18 @@ class MainActivity : ComponentActivity() {
                     state = loginState,
                     onLoginClick = { studentID, password ->
                         // LoginLogic(studentID, password)
-                        sendSimpleNotification(this)
+                        NotificationHelper.Builder(this)
+                            .setTitle("MainActivity#onCreate: Test Notify")
+                            .setContent("You clicked LoginScreen#onLoginClick!")
+                            .setSmallIcon(R.drawable.ic_launcher_background)
+                            .show()
+
+                        NotificationHelper.Builder(this)
+                            .setTitle("MainActivity#onCreate: Test Progress")
+                            .setContent("Hello Progress bar here")
+                            .setProgress(Int.MIN_VALUE, Int.MAX_VALUE)
+                            .setSmallIcon(R.drawable.ic_launcher_background)
+                            .show()
                     }
                 )
             }

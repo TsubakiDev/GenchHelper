@@ -1,10 +1,5 @@
 package dev.tsubaki.genchelper.ui.logic
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
-import androidx.core.app.NotificationCompat
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
@@ -31,32 +26,4 @@ class LoginLogic(
     private val json = Json { ignoreUnknownKeys = true }
     private var userAgent = "TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzNS4wLjAuMCBTYWZhcmkvNTM3LjM2"
     private var unencryptedAID = "192499621"
-}
-
-fun sendSimpleNotification(context: Context) {
-    // 创建通知渠道（Android 8.0+ 必需）
-    val channelId = "simple_channel"
-    val channelName = "Simple Notifications"
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val channel = NotificationChannel(
-            channelId,
-            channelName,
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        val notificationManager = context.getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannel(channel)
-    }
-
-    // 构建通知
-    val notification = NotificationCompat.Builder(context, channelId)
-        .setSmallIcon(android.R.drawable.ic_dialog_info) // 必须设置小图标
-        .setContentTitle("Test Notification")
-        .setContentText("test")
-        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        .build()
-
-    // 发送通知
-    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    notificationManager.notify(1, notification)
 }

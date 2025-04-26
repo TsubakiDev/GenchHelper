@@ -1,5 +1,6 @@
 package dev.tsubaki.genchelper.ui.screens
 
+import android.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -72,9 +73,14 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "欢迎登录 GenchHelper",
+                    text = "欢迎使用 建桥助手",
                     style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 32.dp)
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+
+                Text(
+                    text = "请登录你的上海建桥学院账号",
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
                 OutlinedTextField(
