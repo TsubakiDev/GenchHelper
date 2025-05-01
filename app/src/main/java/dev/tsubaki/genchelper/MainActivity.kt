@@ -45,12 +45,12 @@ class MainActivity : ComponentActivity() {
                         state = loginState,
                         onLoginClick = { studentID, password ->
                             GetEncryptedAIDLogic(this).getEncryptedAID(object : AIDCallback {
-                                override fun onSuccess(aid: String) {
-                                    setEncryptedAID(aid)
+                                override fun onSuccess(encryptedAID: String) {
+                                    setEncryptedAID(encryptedAID)
                                     setShowCaptcha(true)
                                     NotificationUtils.Builder(context)
                                         .setTitle("AID 获取成功")
-                                        .setContent(aid)
+                                        .setContent(encryptedAID)
                                         .setSmallIcon(R.drawable.ic_launcher_background)
                                         .show()
                                 }
