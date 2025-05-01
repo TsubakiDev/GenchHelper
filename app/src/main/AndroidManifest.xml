@@ -18,6 +18,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:usesCleartextTraffic="true"
             android:theme="@style/Theme.GenchHelper">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

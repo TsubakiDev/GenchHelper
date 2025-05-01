@@ -124,6 +124,13 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                // 登录逻辑：
+                // 用户请求 IdentifyServer, 发送账号密码 ->
+                // IdentifyServer 返回 Encrypted AID ->
+                // 带着 Encrypted AID 访问 cap_union_prehandle 进行验证码验证 ->
+                // 获取验证后返回的 randStr 和 ticket ->
+                // 带着这两个参数去请求 ValidateSignInByTencentCaptcha ->
+                // 获取result
                 Button(
                     onClick = { onLoginClick(state.studentID, state.password) },
                     modifier = Modifier.fillMaxWidth(),

@@ -2,11 +2,6 @@ package dev.tsubaki.genchelper.ui.logic
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import androidx.core.content.ContextCompat.startActivity
-import dev.tsubaki.genchelper.R
-import dev.tsubaki.genchelper.TencentCaptchaActivity
-import dev.tsubaki.genchelper.utilities.NotificationUtils
 import kotlinx.serialization.Serializable
 import okhttp3.Call
 import okhttp3.Callback
@@ -30,43 +25,11 @@ interface AIDCallback {
     fun onFailure(error: String)
 }
 
-class LoginLogic(
-    private val context: Context,
-    val studentID: String,
-    val password: String
+class GetEncryptedAIDLogic(
+    private val context: Context
 ) {
-    // 登录逻辑：
-    // 用户请求 IdentifyServer, 发送账号密码 -> IdentifyServer 返回 Encrypted AID -> 带着 Encrypted AID 访问 cap_union_prehandle 进行验证码验证 -> 获取验证后返回的 randStr 和 ticket -> 带着这两个参数去请求 ValidateSignInByTencentCaptcha -> 然后获取result
-    private val userAgent = "Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0"
-    private val unencryptedAID = "192499621"
-
-    fun startLogin() {
-        // 使用回调函数获取 Encrypted AID
-        getEncryptedAID(object : AIDCallback{
-            override fun onSuccess(encryptedAID: String) {
-                NotificationUtils.Builder(context)
-                    .setTitle("AID 获取成功")
-                    .setContent(encryptedAID)
-                    .setSmallIcon(R.drawable.ic_launcher_background)
-                    .show()
-
-                val intent = Intent(null, TencentCaptchaActivity::class.java)
-                context.startActivity(intent, null)
-            }
-
-            override fun onFailure(error: String) {
-                NotificationUtils.Builder(context)
-                    .setTitle("请求失败")
-                    .setContent(error)
-                    .setSmallIcon(R.drawable.ic_launcher_background)
-                    .show()
-            }
-
-        })
-    }
-
     // 请求 IdentifyServer 获取 Encrypted AID
-    private fun getEncryptedAID(callback: AIDCallback) {
+    fun getEncryptedAID(callback: AIDCallback) {
         val client = OkHttpSingleton.instance
         val request: Request = Request.Builder()
             .url("https://my.gench.edu.cn/FAP5.IdentityServer/api/Authentication/GetAIDEncrypted")
