@@ -17,7 +17,7 @@ import androidx.core.content.getSystemService
 import java.util.concurrent.atomic.AtomicInteger
 
 @SuppressLint("StaticFieldLeak")
-object NotificationHelper {
+object NotificationUtils {
 
     private val notificationId = AtomicInteger(1000)
     private const val DEFAULT_CHANNEL_ID = "ghelper_default_channel"
@@ -103,10 +103,10 @@ object NotificationHelper {
         private fun createDefaultChannel(manager: NotificationManager) {
             NotificationChannel(
                 DEFAULT_CHANNEL_ID,
-                "General Notifications",
+                "默认通知",
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = "Default notification channel"
+                description = "默认通知"
                 enableLights(true)
                 lightColor = android.graphics.Color.BLUE
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
