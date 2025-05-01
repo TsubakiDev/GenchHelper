@@ -12,10 +12,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import dev.tsubaki.genchelper.ui.logic.AIDCallback
-import dev.tsubaki.genchelper.ui.logic.GetEncryptedAIDLogic
-import dev.tsubaki.genchelper.ui.logic.TencentCaptchaWebView
-import dev.tsubaki.genchelper.ui.logic.verifyWithServer
+import dev.tsubaki.genchelper.logic.AIDCallback
+import dev.tsubaki.genchelper.logic.GetEncryptedAIDLogic
+import dev.tsubaki.genchelper.logic.TencentCaptchaWebView
+import dev.tsubaki.genchelper.logic.verifyWithServer
 import dev.tsubaki.genchelper.ui.screens.LoginScreen
 import dev.tsubaki.genchelper.ui.screens.rememberLoginScreenState
 import dev.tsubaki.genchelper.utilities.NotificationUtils
