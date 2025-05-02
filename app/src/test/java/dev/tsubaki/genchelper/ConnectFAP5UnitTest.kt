@@ -2,8 +2,8 @@ package dev.tsubaki.genchelper
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import dev.tsubaki.genchelper.logic.AIDCallback
-import dev.tsubaki.genchelper.logic.GetEncryptedAIDLogic
+import dev.tsubaki.genchelper.logic.login.AIDCallback
+import dev.tsubaki.genchelper.logic.login.GetEncryptedAIDLogic
 import org.junit.Test
 
 class ConnectFAP5UnitTest {

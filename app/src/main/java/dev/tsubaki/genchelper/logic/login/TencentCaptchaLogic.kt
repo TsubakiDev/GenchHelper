@@ -1,4 +1,4 @@
-package dev.tsubaki.genchelper.logic
+package dev.tsubaki.genchelper.logic.login
 
 import android.app.Activity
 import android.content.Context
@@ -95,7 +95,7 @@ private fun WebView.setupWebView(
         }
     }
 
-    loadUrl("")
+    loadUrl("https://turing.captcha.qcloud.com/TCaptcha.js")
 }
 
 @OptIn(ExperimentalEncodingApi::class)

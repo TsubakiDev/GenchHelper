@@ -1,4 +1,4 @@
-package dev.tsubaki.genchelper.logic
+package dev.tsubaki.genchelper.logic.login
 
 import android.app.Activity
 import android.content.Context
