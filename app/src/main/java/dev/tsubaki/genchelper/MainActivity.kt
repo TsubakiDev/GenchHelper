@@ -14,8 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import dev.tsubaki.genchelper.logic.AIDCallback
 import dev.tsubaki.genchelper.logic.GetEncryptedAIDLogic
-import dev.tsubaki.genchelper.logic.TencentCaptchaWebView
-import dev.tsubaki.genchelper.logic.verifyWithServer
+import dev.tsubaki.genchelper.logic.preHandleCaptcha
 import dev.tsubaki.genchelper.ui.screens.LoginScreen
 import dev.tsubaki.genchelper.ui.screens.rememberLoginScreenState
 import dev.tsubaki.genchelper.utilities.NotificationUtils
@@ -67,7 +66,9 @@ class MainActivity : ComponentActivity() {
                     )
 
                     if (showCaptcha && encryptedAID != null) {
-                        TencentCaptchaWebView(
+                        preHandleCaptcha(this, encryptedAID)
+                        /*
+                        TencentCaptchaWebView (
                             onDismiss = { showWebView = false },
                             onVerify = { ticket, randstr ->
                                 NotificationUtils.Builder(context)
@@ -79,6 +80,7 @@ class MainActivity : ComponentActivity() {
                             },
                             encryptedAID = encryptedAID
                         )
+                         */
                     }
                 }
             }
