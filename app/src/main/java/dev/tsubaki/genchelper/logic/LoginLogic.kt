@@ -4,6 +4,7 @@ import android.content.Context
 import dev.tsubaki.genchelper.R
 import dev.tsubaki.genchelper.logic.login.AIDCallback
 import dev.tsubaki.genchelper.logic.login.GetEncryptedAIDLogic
+import dev.tsubaki.genchelper.logic.login.getSignInConfig
 import dev.tsubaki.genchelper.utilities.NotificationUtils
 
 // 登录逻辑：
@@ -18,6 +19,8 @@ fun startLogin(
     password: String,
     context: Context
 ) {
+    getSignInConfig(context)
+
     GetEncryptedAIDLogic(context).getEncryptedAID(object : AIDCallback {
         override fun onSuccess(encryptedAID: String) {
             NotificationUtils.Builder(context)
