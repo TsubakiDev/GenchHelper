@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     LoginScreen(
                         state = loginState,
                         onLoginClick = { studentID, password ->
-                            startLogin(studentID, password, this)
+                            startLogin(studentID, password, this, loginState)
                         }
                     )
                 }

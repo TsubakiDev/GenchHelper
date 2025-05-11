@@ -2,8 +2,6 @@ package dev.tsubaki.genchelper.logic.login
 
 import android.app.Activity
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -17,9 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.tsubaki.genchelper.R
 import dev.tsubaki.genchelper.utilities.NotificationUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import okhttp3.Call
 import okhttp3.Callback
@@ -30,8 +25,6 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
-
-private const val userAgent = "Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0"
 
 @Serializable
 data class IdentifyRequest(val username: String, val password: String)
@@ -44,8 +37,6 @@ data class FinalResult(val success: Boolean, val message: String)
 
 @Composable
 fun TencentCaptchaWebView(
-    onDismiss: () -> Unit,
-    encryptedAID: String,
     onVerify: (String, String) -> Unit
 ) {
     val context = LocalContext.current
@@ -76,14 +67,7 @@ private fun WebView.setupWebView(
         javaScriptCanOpenWindowsAutomatically = true
     }
 
-    addJavascriptInterface(object {
-        @JavascriptInterface
-        fun onVerify(ticket: String, randstr: String) {
-            Handler(Looper.getMainLooper()).post {
-                onVerify(ticket, randstr)
-            }
-        }
-    }, "AndroidInterface")
+    addJavascriptInterface(ResponseData(), "AndroidInterface")
 
     webViewClient = object : WebViewClient() {
         override fun shouldOverrideUrlLoading(
@@ -93,9 +77,48 @@ private fun WebView.setupWebView(
             request?.url?.toString()?.let { view?.loadUrl(it) }
             return true
         }
+
+        override fun onPageFinished(view: WebView, url: String?) {
+            super.onPageFinished(view, url)
+
+            view.postDelayed({
+                val jsScript = """
+                (function() {
+                    try {
+                        var iframe = document.getElementById('tencent_iframe_by');
+                        if (!iframe) return "iframe未找到";
+                    
+                        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        return iframeDoc.documentElement.outerHTML;
+                    } catch (e) {
+                        return "访问错误: " + e.message;
+                    }
+                })();
+            """.trimIndent()
+
+                view.evaluateJavascript(jsScript) { src ->
+                    src?.takeIf { it != "null" }?.removeSurrounding("\"")?.let { iframeUrl ->
+                        loadUrl(iframeUrl)
+                    }
+                }
+            }, 2000)
+        }
     }
 
-    loadUrl("https://turing.captcha.qcloud.com/TCaptcha.js")
+    loadUrl("https://my.gench.edu.cn/FAP5.IdentityServer/SignIn.html")
+}
+
+class ResponseData() {
+    @JavascriptInterface
+    fun getResponseData(data: String, context: Context) {
+        (context as? Activity)?.runOnUiThread {
+            NotificationUtils.Builder(context)
+                .setTitle("验证码验证通过, 返回json: ")
+                .setContent(data)
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .show()
+        }
+    }
 }
 
 @OptIn(ExperimentalEncodingApi::class)
@@ -114,7 +137,7 @@ fun preHandleCaptcha(
                     "&protocol=https" +
                     "&accver=1" +
                     "&showtype=popup" +
-                    "&ua=${Base64.encode(userAgent.toByteArray())}" +
+                    "&ua=${Base64.encode("Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0".toByteArray())}" +
                     "&noheader=1" +
                     "&fb=1" +
                     "&aged=0" +
@@ -159,15 +182,4 @@ fun preHandleCaptcha(
             }
         }
     })
-}
-
-fun verifyWithServer(ticket: String, randstr: String) {
-    CoroutineScope(Dispatchers.IO).launch {
-        try {
-            // 验证逻辑
-
-        } catch (e: Exception) {
-            // 处理异常
-        }
-    }
 }

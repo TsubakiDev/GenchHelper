@@ -1,18 +1,21 @@
 package dev.tsubaki.genchelper.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,11 +38,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import dev.tsubaki.genchelper.logic.login.TencentCaptchaWebView
 
 class LoginScreenState {
     var studentID by mutableStateOf("")
     var password by mutableStateOf("")
     var passwordVisible by mutableStateOf(false)
+    var showCaptcha by mutableStateOf(false)
+    var isLoading by mutableStateOf(false)
+    var loginError by mutableStateOf<String?>(null)
 }
 
 @Composable
@@ -122,14 +129,46 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
+                state.loginError?.let { error ->
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = error,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
-                    onClick = { onLoginClick(state.studentID, state.password) },
+                    onClick = {
+                        keyboardController?.hide()
+                        onLoginClick(state.studentID, state.password)
+                    },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = state.studentID.isNotBlank() && state.password.isNotBlank()
+                    enabled = !state.isLoading &&
+                            state.studentID.isNotBlank() &&
+                            state.password.isNotBlank()
                 ) {
-                    Text("登录")
+                    if (state.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            strokeWidth = 2.dp
+                        )
+                    } else if (state.showCaptcha) {
+                        Scaffold { padding ->
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                TencentCaptchaWebView(
+                                    onVerify = { ticket, randStr ->
+                                        state.showCaptcha = false
+                                    }
+                                )
+                            }
+                        }
+                    } else {
+                        Text("登录")
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
